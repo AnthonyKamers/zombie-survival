@@ -215,14 +215,17 @@ class Game:
         self._surface = pg.display.set_mode((1024, 576))
         self._width, self._height = self._surface.get_size()
         self._paused = False
-        self._game = MainView(self._surface, self._width, self._height)
+        self._game = None
         self._view = views["START"](self._surface) # setta view inicial para tela inicial
 
     def start(self):
         pg.init()
         pg.display.init()
         pg.display.set_caption("Zombie Survival")
-        
+
+        self.loop()
+
+    def loop(self):
         # loop principal do jogo
         while True:
             # sair da aplicação
@@ -239,10 +242,6 @@ class Game:
 
                 if target == 'RESUME':
                     self._view = None
-
-                elif target == "PAUSE":
-                    self._paused = True
-                    self._view = views["PAUSE"](self._surface)
 
                 elif target in ("RESTART", "PLAY"):
                     self._game = MainView(self._surface, self._width, self._height)
