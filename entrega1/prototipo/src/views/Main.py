@@ -7,11 +7,15 @@ from ..personagens.Jogador import Jogador
 
 class Tile(pg.sprite.Sprite):
 
-    def __init__(self, surface, tile, posicao, tamanho):
+    def __init__(self, surface, tile, posicao, tamanho, name):
+        super().__init__()
         self.surface = surface
         self.x, self.y = posicao
         self.comprimento, self.altura = tamanho
         self.tile = tile
+        self.image = self.tile
+        self.name = name
+        self.rect = pg.Rect((self.x * self.comprimento, self.y * self.altura), tamanho)
 
     def draw(self):
         self.surface.blit(self.tile, (self.x * self.comprimento, self.y * self.altura))
@@ -20,20 +24,30 @@ class Main():
 
     def __init__(self, surface, width, height):
         self._surface = surface
-        self._player1 = Jogador(self._surface, width/2, height/2, 32, 32, imagem="player1.png")
-        self._player2 = Jogador(self._surface, width/2, height/2, 32, 32, imagem="player2.png")
+        self._player1 = Jogador(self._surface, width/2, (height/2) - 100, 32, 32, imagem="player1.png")
+        self._player2 = Jogador(self._surface, width/2, (height/2) - 100, 32, 32, imagem="player2.png")
 
         self._vidas = pg.sprite.Group()
 
-        self._cenario = pg.sprite.Group()
+        # self._cenario = pg.sprite.Group()
+        self._cenario = []
+        self._walls = pg.sprite.Group()
         self._layers = pytmx.load_pygame(get_path("map_finito.tmx"))
 
         for layer in self._layers.visible_layers:
+            name = layer.name
+
             if isinstance(layer, pytmx.TiledTileLayer):
+
                 for x, y, gid in layer:
                     tile = self._layers.get_tile_image_by_gid(gid)
                     if tile:
-                        tile = Tile(self._surface, pg.transform.scale(tile, (32, 32)), (x, y), (32, 32))
+                        tile = Tile(self._surface, pg.transform.scale(tile, (32, 32)), (x, y), (32, 32), name)
+                        self._cenario.append(tile)
+                        
+                        if name == "wall":
+                            self._walls.add(tile)
+
                         # self._cenario.add(tile)
 
         # montar base do cenário (com biblioteca pytmx)
@@ -48,7 +62,16 @@ class Main():
         pass
 
     def draw(self):
-        self._cenario.draw(self._surface)
+        for i in self._cenario:
+            i.draw()
+
+        # self._cenario.draw(self._surface)
+
+        # for i in self._cenario:
+        #     print('drawwwwww')
+        #     i.draw()
+
+        # self._cenario.draw(self._surface)
 
         # for layer in self._layers.visible_layers:
         #     if isinstance(layer, pytmx.TiledTileLayer):
@@ -104,7 +127,7 @@ class Main():
         elif keyboard[pg.K_s]:
             direction[1] = 1
 
-        self._player1.move(direction[0], direction[1], self._cenario, self._vidas)
+        self._player1.move(direction[0], direction[1], self._walls, self._vidas)
 
         # tiro jogador 1
         if keyboard[pg.K_SPACE]:
@@ -122,7 +145,7 @@ class Main():
         elif keyboard[pg.K_DOWN]:
             direction2[1] = 1
 
-        self._player2.move(direction2[0], direction2[1], self._cenario, self._vidas)
+        self._player2.move(direction2[0], direction2[1], self._walls, self._vidas)
 
         # tiro jogador 2
         if keyboard[pg.K_RCTRL] or keyboard[pg.K_LCTRL]:

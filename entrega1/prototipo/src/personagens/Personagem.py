@@ -14,6 +14,8 @@ class Personagem(ABC):
         self._velocidade = velocidade
         self._imagem = load_image(imagem, (comprimento, altura))
         self.rect = self._imagem.get_rect()
+        self.rect.left = self._x
+        self.rect.top = self._y
     
     @abstractmethod
     def move(self):
