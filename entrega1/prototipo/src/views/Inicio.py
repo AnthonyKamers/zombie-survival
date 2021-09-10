@@ -1,5 +1,5 @@
 import pygame as pg
-from utils.functions import load_image
+from ..utils.functions import load_image
 
 
 class Inicio():
@@ -21,5 +21,8 @@ class Inicio():
             elif self._exit.collidepoint(mouse_pos):
                 emit = 'EXIT'
             
-        return emit
-        
+        return emit   
+         
+    def draw(self):
+        self._surface.blit(self._image, (0, 0))
+        return self.event_listener()

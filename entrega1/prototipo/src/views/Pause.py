@@ -1,6 +1,6 @@
 import pygame as pg
-from utils.functions import load_image
-from Tela import Tela
+from ..utils.functions import load_image
+from .Tela import Tela
 
 class Pause():
 

@@ -1,5 +1,5 @@
 import pygame as pg
-from utils.constants import *
+from .utils.constants import *
 
 
 class Jogo:
@@ -9,6 +9,7 @@ class Jogo:
         self._width, self._height = self._surface.get_size()
         self._paused = False
         self._game = None
+
         self._view = views["START"](self._surface) # setta view inicial para tela inicial
 
     def inicializarParametros(self):
@@ -69,4 +70,3 @@ class Jogo:
 
     def quit(self):
         exit()
-        

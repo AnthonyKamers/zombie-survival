@@ -4,5 +4,5 @@ from src.Jogo import Jogo
 
 
 if __name__ == "__main__":
-    cleiton = Jogo()
-    cleiton.inicializarParametros()
+    jogo = Jogo()
+    jogo.inicializarParametros()

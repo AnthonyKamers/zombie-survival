@@ -2,15 +2,24 @@ import math
 import pygame as pg
 
 from typing import List
-from Personagem import Personagem
-from Inimigo import Inimigo
-from Bala import Bala
-from utils.functions import utils
+from .Personagem import Personagem
+from .Inimigo import Inimigo
+from .Bala import Bala
+# from utils.functions import utils
+
+class Teste(pg.sprite.Sprite):
+    def __init__(self, surface, posicao, tamanho):
+        self.rect = pg.Rect(posicao, tamanho)
+        self.surface = surface
+        self.x, self.y = posicao
+        self.comprimento, self.altura = tamanho
+
 
 class Jogador(Personagem, pg.sprite.Sprite):
-    def __init__(self, x: int, y: int, comprimento: int, altura: int, vida: int, velocidade: int, direcao: List[int, int], imagem: str):
-        super().__init__(x, y, comprimento, altura, vida, velocidade, direcao, imagem)
-        self._balas = []
+
+    def __init__(self, surface: pg.Surface, x: int, y: int, comprimento: int, altura: int, vida: int = 10, velocidade: int = 1, imagem: str = "player1.png"):
+        super().__init__(surface, x, y, comprimento, altura, vida, velocidade, imagem)
+        self._balas = pg.sprite.Group()
 
         self._direcao = [0, 0]
         self._lastDirecao = [0, 0]
@@ -19,7 +28,8 @@ class Jogador(Personagem, pg.sprite.Sprite):
         direction = [x, y]
 
         # teste de colisão com o cenário
-        rect = pg.Rect(self.rect.left + direction[0], self.rect.top + direction[1], self._comprimento, self._altura)
+        # rect = pg.Rect(self.rect.left + direction[0], self.rect.top + direction[1], self._comprimento, self._altura)
+        rect = Teste(self._surface, (self.rect.left + direction[0], self.rect.top + direction[1]), (self._comprimento, self._altura))
         atingiuCenario = self.atingiuCenario(rect, cenario)
 
         # se não colidiu com o cenário, movimenta-se
@@ -39,18 +49,8 @@ class Jogador(Personagem, pg.sprite.Sprite):
             vidas.remove(vidaAtingida)  # remove curativo do cenário
             self.aumentarVida(10)       # cada curativo tem recuperação de vida de 10% da vida do jogador
 
-            
-
     def shoot(self):
-        self.__floating_point_x, self.__floating_point_y = self.rect.left, self.rect.top
-        self.__dest_x, self.__dest_y = destination
-
-        x_diff = self.__dest_x - self.rect.left
-        y_diff = self.__dest_y - self.rect.top
-        angle = math.atan2(y_diff, x_diff)
-
-        self.__change_x = math.cos(angle) * int(self.speed)
-        self.__change_y = math.sin(angle) * int(self.speed)
+        self._balas.add(Bala(self._surface, (self.rect.left, self.rect.top), (5, 5), 'bala.png', self._lastDirecao))
 
     @property
     def getVida(self):
@@ -69,49 +69,53 @@ class Jogador(Personagem, pg.sprite.Sprite):
 
     def reduzirVida(self, quantidadeVida: int):
         self._vida -= quantidadeVida
-    
+
     # def checkZumbi(self, zumbis: List[Inimigo]):
     #     pass
 
-    def atingiuCenario(self, rect: pg.Rect, cenario: pg.Sprite):
+    def atingiuCenario(self, rect, cenario: pg.sprite.Sprite):
         return pg.sprite.spritecollideany(rect, cenario) is not None
 
-    def atingiuVida(self, vidas: pg.Sprite):
+    def atingiuVida(self, vidas: pg.sprite.Sprite):
         return pg.sprite.spritecollideany(self, vidas)
 
-
-class Character(pg.sprite.Sprite):
-    def __init__(self, surface: pg.Surface, position, size, image):
-        self._surface = surface
-        self._size = size
-        self._image = utils.load_image(image, size)
-        self.rect = self.image.get_rect()
-        self._rect.left, self._rect.top = position
-
-        self._lastDirection = [0, 0]
-        self._direction = [0, 0]
-
-        self._bullets = []
-
-    def update(self):
-        pass
-
     def draw(self):
-        self._surface.blit(self._image, (self._rect.left, self._rect.top))
-        self.update()
+        self._surface.blit(self._imagem, (self.rect.left, self.rect.top))
+        self._balas.draw(self._surface)
 
-    def move(self, direction):
-        self._direction = direction
 
-        if direction[0] or direction[1]:
-            self._lastDirection = self._direction
+# class Character(pg.sprite.Sprite):
+#     def __init__(self, surface: pg.Surface, position, size, image):
+#         self._surface = surface
+#         self._size = size
+#         self._image = utils.load_image(image, size)
+#         self.rect = self.image.get_rect()
+#         self._rect.left, self._rect.top = position
 
-        self._rect.left += direction[0]
-        self._rect.top += direction[1]
+#         self._lastDirection = [0, 0]
+#         self._direction = [0, 0]
 
-    def shoot(self):
-        self._bullets.append(Bullet(self._surface, (self._rect.left, self._rect.top), (5, 5), 'bala.png', self._lastDirection))
+#         self._bullets = []
+
+#     def update(self):
+#         pass
+
+#     def draw(self):
+#         self._surface.blit(self._image, (self._rect.left, self._rect.top))
+#         self.update()
+
+#     def move(self, direction):
+#         self._direction = direction
+
+#         if direction[0] or direction[1]:
+#             self._lastDirection = self._direction
+
+#         self._rect.left += direction[0]
+#         self._rect.top += direction[1]
+
+#     def shoot(self):
+#         self._bullets.append(Bala(self._surface, (self._rect.left, self._rect.top), (5, 5), 'bala.png', self._lastDirection))
     
-    def bullets(self):
-        return self._bullets
+#     def bullets(self):
+#         return self._bullets
         

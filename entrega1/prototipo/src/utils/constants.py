@@ -1,5 +1,6 @@
-from views import Pause, Inicio, Main
-
+from ..views.Inicio import Inicio
+from ..views.Pause import Pause
+from ..views.Main import Main
 
 views = {
     "PAUSE": Pause,
