@@ -5,24 +5,17 @@ from typing import List
 from .Personagem import Personagem
 from .Inimigo import Inimigo
 from .Bala import Bala
-# from utils.functions import utils
-
-class Teste(pg.sprite.Sprite):
-    def __init__(self, surface, posicao, tamanho):
-        self.rect = pg.Rect(posicao, tamanho)
-        self.surface = surface
-        self.x, self.y = posicao
-        self.comprimento, self.altura = tamanho
-
+from .Teste import Teste
+from ..utils import functions
 
 class Jogador(Personagem, pg.sprite.Sprite):
 
-    def __init__(self, surface: pg.Surface, x: int, y: int, comprimento: int, altura: int, vida: int = 10, velocidade: int = 1, imagem: str = "player1.png"):
+    def __init__(self, surface: pg.Surface, x: int, y: int, comprimento: int, altura: int, vida: int = 100, velocidade: int = 1, imagem: str = "player1.png"):
         super().__init__(surface, x, y, comprimento, altura, vida, velocidade, imagem)
-        self._balas = []
+        self._balas = pg.sprite.Group()
 
-        self._direcao = [0, 0]
-        self._lastDirecao = [0, 0]
+        self._direcao = [1, 0]
+        self._lastDirecao = [1, 0]
     
     def move(self, x: int, y: int, cenario: pg.sprite.Sprite, vidas: pg.sprite.Group):
         direction = [x, y]
@@ -50,17 +43,14 @@ class Jogador(Personagem, pg.sprite.Sprite):
             self.aumentarVida(10)       # cada curativo tem recuperação de vida de 10% da vida do jogador
 
     def shoot(self):
-        self._balas.append(Bala(self._surface, (self.rect.left, self.rect.top), (5, 5), 'bala.png', self._lastDirecao))
+        self._balas.add(Bala(self._surface, (self.rect.left, self.rect.top), (5, 5), 'bala.png', self._lastDirecao))
 
-    @property
     def getVida(self):
         return self._vida
     
-    @property
     def getPosicao(self):
         return (self._x, self._y)
     
-    @property
     def getBalas(self):
         return self._balas
     
@@ -70,17 +60,9 @@ class Jogador(Personagem, pg.sprite.Sprite):
     def reduzirVida(self, quantidadeVida: int):
         self._vida -= quantidadeVida
 
-    # def checkZumbi(self, zumbis: List[Inimigo]):
-    #     pass
-
-    # def checkWall(self):
-    #     def callback(sprite1, sprite2):
-    #         hited = False
-
-    #         print(sprite1.rect, sprite2.rect)
-            
-    #         return hited
-    #     return callback
+    def checkZumbi(self, zumbis):
+        # for zumbi in zumbis:
+        pass
 
     def atingiuCenario(self, rect, walls):
         return  pg.sprite.spritecollideany(rect, walls)
@@ -89,7 +71,7 @@ class Jogador(Personagem, pg.sprite.Sprite):
         return pg.sprite.spritecollideany(self, vidas)
 
     def draw(self):
-        self._surface.blit(self._imagem, (self.rect.left, self.rect.top))
+        self._surface.blit(functions.flip_sprite(self._imagem, tuple(self._lastDirecao)), (self.rect.left, self.rect.top))
         
         # blittar balas do jogador
         for b in self._balas:

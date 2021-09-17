@@ -17,8 +17,6 @@ class Jogo:
         pg.display.init()
         pg.display.set_caption("Zombie Survival")
 
-        self.loop()
-
     @property
     def getView(self):
         return self._view
@@ -32,6 +30,10 @@ class Jogo:
     def pausar(self):
         self._paused = True
         self._view = views["PAUSE"](self._surface)
+
+    def iniciarPartida(self):
+        self._game = views["MAIN"](self._surface, self._width, self._height)
+        self._view = None
 
     def loop(self):
         # loop principal do jogo
@@ -52,8 +54,7 @@ class Jogo:
                     self._view = None
 
                 elif target in ("RESTART", "PLAY"):
-                    self._game = views["MAIN"](self._surface, self._width, self._height)
-                    self._view = None
+                    self.iniciarPartida()
 
                 elif target == 'EXIT':
                     self.quit()

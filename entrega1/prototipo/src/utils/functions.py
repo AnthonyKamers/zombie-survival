@@ -19,3 +19,20 @@ def load_image(path_image, size, convert=False):
         image = image.convert_alpha()
 
     return pg.transform.scale(image, size)
+
+def flip_sprite(imagem, direction):
+    if 0 not in direction: return imagem
+
+    # [1, 0] -> direita
+    # [-1, 0] -> esquerda
+    # [0, 1] -> cima
+    # [0, -1] -> baixo
+
+    rotation = {
+        (1,  0):  0,
+        (-1, 0):  180,
+        (0,  1): -90,
+        (0, -1):  90
+    }
+
+    return pg.transform.rotate(imagem, rotation[direction])
