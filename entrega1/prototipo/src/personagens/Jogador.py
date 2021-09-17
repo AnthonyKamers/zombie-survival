@@ -16,6 +16,8 @@ class Jogador(Personagem, pg.sprite.Sprite):
 
         self._direcao = [1, 0]
         self._lastDirecao = [1, 0]
+        self._intervaloDeTiro = 200
+        self._ultimoTiro = pg.time.get_ticks()
     
     def move(self, x: int, y: int, cenario: pg.sprite.Sprite, vidas: pg.sprite.Group):
         direction = [x, y]
@@ -43,7 +45,10 @@ class Jogador(Personagem, pg.sprite.Sprite):
             self.aumentarVida(10)       # cada curativo tem recuperação de vida de 10% da vida do jogador
 
     def shoot(self):
-        self._balas.add(Bala(self._surface, (self.rect.left, self.rect.top), (5, 5), 'bala.png', self._lastDirecao))
+        tickAtual = pg.time.get_ticks()
+        if tickAtual - self._ultimoTiro > self._intervaloDeTiro:
+            self._ultimoTiro = tickAtual
+            self._balas.add(Bala(self._surface, (self.rect.left, self.rect.top), (5, 5), 'bala.png', self._lastDirecao))
 
     def getVida(self):
         return self._vida
@@ -72,7 +77,7 @@ class Jogador(Personagem, pg.sprite.Sprite):
 
     def draw(self):
         self._surface.blit(functions.flip_sprite(self._imagem, tuple(self._lastDirecao)), (self.rect.left, self.rect.top))
-        
+
         # blittar balas do jogador
         for b in self._balas:
             b.draw()

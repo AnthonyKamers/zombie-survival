@@ -10,15 +10,24 @@ class Inimigo(Personagem, pg.sprite.Sprite):
         super().__init__(surface, x, y, comprimento, altura, vida, velocidade, imagem)
         self._dano = dano
         self._jogador = None
+        self._ultimoAtaque = 0
     
     def setJogadorInimigo(self, jogador):
         self._jogador = jogador
 
     def getDano(self):
-        return self._dano
+        tickAtual = pg.time.get_ticks()
+        if tickAtual - self._ultimoAtaque > 300:
+            self._ultimoAtaque = tickAtual
+            return self._dano
+        else:
+            return 0
 
     def getJogador(self):
         return self._jogador
+    
+    def getVida(self):
+        return self._vida
     
     def reduzirVida(self, quantidadeVida: int):
         self._vida -= quantidadeVida
@@ -46,9 +55,9 @@ class Inimigo(Personagem, pg.sprite.Sprite):
         self.rect.left = int(self.floating_point_x)
         self.rect.top = int(self.floating_point_y)
 
-        positionBefore = (self.rect.left, self.rect.top)
+        # positionBefore = (self.rect.left, self.rect.top)
 
-        rect = Teste(self._surface, (int(self.floating_point_x), int(self.floating_point_y)), (self._comprimento, self._altura))
+        # rect = Teste(self._surface, (int(self.floating_point_x), int(self.floating_point_y)), (self._comprimento, self._altura))
         # collision = self.atingiuCenario(rect, walls)
 
         # # print(collision)

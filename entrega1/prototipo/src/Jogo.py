@@ -67,6 +67,7 @@ class Jogo:
                     self.pausar()
 
                 elif target == "isOver":
+                    print("iSOVER CARAI")
                     pass
 
     def quit(self):

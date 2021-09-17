@@ -16,7 +16,6 @@ class Bala(pg.sprite.Sprite):
         self._direction = direction
         self._dano = dano
     
-    @property
     def getDano(self):
         return self._dano
     

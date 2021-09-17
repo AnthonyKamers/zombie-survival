@@ -76,16 +76,16 @@ class Main():
         # Timer
         font = pg.font.SysFont('Arial', 64)
 
-        if tick - self._tick >= 1000:
+        if tick - self._tick >= 1300:
             self._tick = tick
 
             # self._qtdInimigosRound = random.randint(3, 15)
             self._qtdInimigosRound = 1
             cenario = list(filter(lambda x: x.getName() == 'floor', self._cenario))
 
-            for i in range(0, self._qtdInimigosRound):
+            for i in range(0, self._qtdInimigosRound): #dano = (self._round+1)*2
                 escolhido = random.choice(cenario)
-                inimigo_now = Inimigo(self._surface, escolhido.getX() + 50, escolhido.getY(), 32, 32, dano = self._round*2)
+                inimigo_now = Inimigo(self._surface, escolhido.getX(), escolhido.getY(), 32, 32, dano=25)
                 inimigo_now.setJogadorInimigo(self._player1 if i % 2 == 0 else self._player2)
                 
                 self._inimigos.add(inimigo_now)
@@ -96,17 +96,41 @@ class Main():
             self._surface.blit(timer, (self._surface.get_width() / 2, self._surface.get_height() / 2 - 200))
             return True
 
-
     def avaliarEncerramentoRound(self):
         if len(self._inimigos) == 0:
             self._iniciarRound = True
     
     def avaliarEncerramentoPartida(self):
-        if self._player1._vida <= 0 or self._player2._vida <= 0:
-            return True
+        if self._player1.getVida() <= 0 or self._player2.getVida() <= 0:
+            return "isOver"
+        return ""
     
+    def collideInimigoBala(self, jogador):
+        colisao = pg.sprite.groupcollide(self._inimigos, jogador.getBalas(), False, True)
+        for inimigo, bala in colisao.items():
+            inimigo.reduzirVida(bala[0].getDano())
+
+            # se vida do inimigo for <= 0, matar
+            if inimigo.getVida() <= 0:
+                self._inimigos.remove(inimigo)
+
+    def collideJogadorInimigo(self, jogador):
+        inimigo = pg.sprite.spritecollideany(jogador, self._inimigos)
+        if inimigo is not None:
+            jogador.reduzirVida(inimigo.getDano())
+
     def collide(self):
-        pass
+        # colisão dos inimigos com o jogador
+        self.collideJogadorInimigo(self._player1)
+        self.collideJogadorInimigo(self._player2)
+
+        # colisão balas dos jogadores com as paredes (e destruir as balas, caso atingirem)
+        pg.sprite.groupcollide(self._walls, self._player1.getBalas(), False, True)
+        pg.sprite.groupcollide(self._walls, self._player2.getBalas(), False, True)
+        
+        # colisão balas dos jogadores com inimigos
+        self.collideInimigoBala(self._player1)
+        self.collideInimigoBala(self._player2)
 
     def draw(self):
         # blittar cenário na tela
@@ -138,7 +162,8 @@ class Main():
 
         # avalia se um dos jogadores está morto
         isOver = self.avaliarEncerramentoPartida()
-        isOver = "isOver" if isOver else self.event_listener()
+
+        return isOver or self.event_listener()
 
     def event_listener(self):
         keyboard = pg.key.get_pressed()
