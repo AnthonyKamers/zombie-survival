@@ -52,10 +52,10 @@ class Inimigo(Personagem, pg.sprite.Sprite):
         self.floating_point_y += self.change_y
         self.floating_point_x += self.change_x
 
+        positionBefore = (self.rect.left, self.rect.top)
+
         self.rect.left = int(self.floating_point_x)
         self.rect.top = int(self.floating_point_y)
-
-        positionBefore = (self.rect.left, self.rect.top)
 
         rect = Teste(self._surface, (int(self.floating_point_x), int(self.floating_point_y)), (self._comprimento, self._altura))
         collision = self.atingiuCenario(rect, walls)
