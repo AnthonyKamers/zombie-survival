@@ -1,11 +1,8 @@
-import math
 import pygame as pg
 
-from typing import List
 from .Personagem import Personagem
-from .Inimigo import Inimigo
 from .Bala import Bala
-from .Teste import Teste
+from .Teste import Teste # classe auxiliar para fazer teste de colisão com parede
 from ..utils import functions
 
 class Jogador(Personagem, pg.sprite.Sprite):
@@ -65,10 +62,6 @@ class Jogador(Personagem, pg.sprite.Sprite):
     def reduzirVida(self, quantidadeVida: int):
         self._vida -= quantidadeVida
 
-    def checkZumbi(self, zumbis):
-        # for zumbi in zumbis:
-        pass
-
     def atingiuCenario(self, rect, walls):
         return  pg.sprite.spritecollideany(rect, walls)
 
@@ -81,40 +74,3 @@ class Jogador(Personagem, pg.sprite.Sprite):
         # blittar balas do jogador
         for b in self._balas:
             b.draw()
-
-
-# class Character(pg.sprite.Sprite):
-#     def __init__(self, surface: pg.Surface, position, size, image):
-#         self._surface = surface
-#         self._size = size
-#         self._image = utils.load_image(image, size)
-#         self.rect = self.image.get_rect()
-#         self._rect.left, self._rect.top = position
-
-#         self._lastDirection = [0, 0]
-#         self._direction = [0, 0]
-
-#         self._bullets = []
-
-#     def update(self):
-#         pass
-
-#     def draw(self):
-#         self._surface.blit(self._image, (self._rect.left, self._rect.top))
-#         self.update()
-
-#     def move(self, direction):
-#         self._direction = direction
-
-#         if direction[0] or direction[1]:
-#             self._lastDirection = self._direction
-
-#         self._rect.left += direction[0]
-#         self._rect.top += direction[1]
-
-#     def shoot(self):
-#         self._bullets.append(Bala(self._surface, (self._rect.left, self._rect.top), (5, 5), 'bala.png', self._lastDirection))
-    
-#     def bullets(self):
-#         return self._bullets
-        

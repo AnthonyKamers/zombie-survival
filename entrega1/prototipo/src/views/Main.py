@@ -5,30 +5,7 @@ import random
 from ..utils.functions import load_image, get_path
 from ..personagens.Jogador import Jogador
 from ..personagens.Inimigo import Inimigo
-
-class Tile(pg.sprite.Sprite):
-
-    def __init__(self, surface, tile, posicao, tamanho, name):
-        super().__init__()
-        self._surface = surface
-        self._x, self._y = posicao
-        self._comprimento, self._altura = tamanho
-        self._tile = tile
-        self._image = self._tile
-        self._name = name
-        self.rect = pg.Rect((self._x * self._comprimento, self._y * self._altura), tamanho)
-
-    def getX(self):
-        return self._x * self._comprimento
-    
-    def getY(self):
-        return self._y * self._altura
-    
-    def getName(self):
-        return self._name
-
-    def draw(self):
-        self._surface.blit(self._tile, (self._x * self._comprimento, self._y * self._altura))
+from .Tile import Tile
 
 class Main():
 
@@ -63,8 +40,8 @@ class Main():
                         if name == "wall":
                             self._walls.add(tile)
 
-        self.iniciarRound()
         pg.font.init()
+        self.iniciarRound()
 
     def iniciarRound(self):
         tick = pg.time.get_ticks()
@@ -72,18 +49,17 @@ class Main():
         # Timer
         font = pg.font.SysFont('Arial', 64)
 
-        if tick - self._tick >= 3300:
+        if tick - self._tick >= 3000:
             self._tick = tick
 
             self._round += 1
 
-            # self._qtdInimigosRound = random.randint(3, 15)
-            self._qtdInimigosRound = 1
+            self._qtdInimigosRound = random.randint(3, 15)
             cenario = list(filter(lambda x: x.getName() == 'floor', self._cenario))
 
-            for i in range(0, self._qtdInimigosRound): #dano = (self._round+1)*2
+            for i in range(0, self._qtdInimigosRound):
                 escolhido = random.choice(cenario)
-                inimigo_now = Inimigo(self._surface, escolhido.getX(), escolhido.getY(), 32, 32, dano=25)
+                inimigo_now = Inimigo(self._surface, escolhido.getX(), escolhido.getY(), 32, 32, dano = (self._round+1)*2)
                 inimigo_now.setJogadorInimigo(self._player1 if i % 2 == 0 else self._player2)
                 
                 self._inimigos.add(inimigo_now)
