@@ -63,21 +63,19 @@ class Main():
                         if name == "wall":
                             self._walls.add(tile)
 
-        # huds do jogo
-        self._hud1 = load_image('hud1.png', (300, 150))
-        self._hud2 = load_image('hud2.png', (300, 150))
-
         self.iniciarRound()
+        pg.font.init()
 
     def iniciarRound(self):
-        pg.font.init()
         tick = pg.time.get_ticks()
 
         # Timer
         font = pg.font.SysFont('Arial', 64)
 
-        if tick - self._tick >= 1300:
+        if tick - self._tick >= 3300:
             self._tick = tick
+
+            self._round += 1
 
             # self._qtdInimigosRound = random.randint(3, 15)
             self._qtdInimigosRound = 1
@@ -136,21 +134,28 @@ class Main():
         # blittar cenário na tela
         for i in self._cenario:
             i.draw()
-
-        # blittar huds
-        self._surface.blit(self._hud1, (0, 0))
-        self._surface.blit(self._hud2, (724, 0))
+        
+        # blittar round atual
+        font = pg.font.SysFont('Arial', 64)
+        round = font.render(str(self._round), True, (0, 255, 255))
+        self._surface.blit(round, (self._surface.get_width() / 2, 0))
 
         # blittar jogadores
         self._player1.draw()
         self._player2.draw()
+
+        # blittar vida jogadores
+        vida1 = font.render("1: " + str( + self._player1.getVida()), True, (0, 255, 255))
+        vida2 = font.render("2: " + str(self._player2.getVida()), True, (0, 255, 255))
+        self._surface.blit(vida1, (5, 0))
+        self._surface.blit(vida2, (self._surface.get_width() - 160, 0))
 
         # blittar inimigos
         for inimigo in self._inimigos:
             inimigo.move(self._walls)
             inimigo.draw()
 
-        # se hold estiver settada, deve executar método hold (3 segundos para jogadores se prepararem)
+        # se atributo estiver settado, deve executar método iniciarRound (3 segundos para jogadores se prepararem)
         if self._iniciarRound:
             self._iniciarRound = self.iniciarRound()
 

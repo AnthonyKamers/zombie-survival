@@ -1,12 +1,11 @@
 import pygame as pg
 from ..utils.functions import load_image
+from .Tela import Tela
 
-
-class Inicio():
+class Inicio(Tela):
     
     def __init__(self, surface: pg.Surface):
-        self._surface = surface
-        self._image = load_image("inicio.png", (1024, 576))
+        super().__init__(surface, (1024, 576), "inicio.png")
         self._play = pg.Rect(512, 269, 366, 112)
         self._exit = pg.Rect(512, 440, 366, 112)
     

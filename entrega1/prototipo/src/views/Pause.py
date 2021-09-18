@@ -2,11 +2,10 @@ import pygame as pg
 from ..utils.functions import load_image
 from .Tela import Tela
 
-class Pause():
+class Pause(Tela):
 
     def __init__(self, surface: pg.Surface):
-        self._surface = surface
-        self._image = load_image("pause.png", (1024, 576))
+        super().__init__(surface, (1024, 576), "pause.png")
         self._resume = pg.Rect(512, 210, 366, 112)
         self._restart = pg.Rect(512, 358, 366, 112)
         self._exit = pg.Rect(512, 495, 366, 112)
@@ -27,8 +26,5 @@ class Pause():
             return emit
     
     def draw(self):
-        pass
-    
-    def draw(self):
-        pass
-        
+        self._surface.blit(self._image, (0, 0))
+        return self.event_listener()
