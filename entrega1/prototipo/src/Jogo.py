@@ -9,6 +9,7 @@ class Jogo:
         self._width, self._height = self._surface.get_size()
         self._paused = False
         self._game = None
+        self._tick = pg.time.get_ticks()
 
         self._view = views["START"](self._surface) # setta view inicial para tela inicial
 
@@ -67,8 +68,8 @@ class Jogo:
                     self.pausar()
 
                 elif target == "isOver":
-                    print("iSOVER CARAI")
-                    pass
+                    self._game = None
+                    self._view = views["START"](self._surface)
 
     def quit(self):
         exit()
