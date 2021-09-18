@@ -29,6 +29,6 @@ class Bala(pg.sprite.Sprite):
         pass
 
     def draw(self):
-        self.rect.left += self._direction[0]
-        self.rect.top += self._direction[1]
+        self.rect.left += self._direction[0] * 2
+        self.rect.top += self._direction[1] * 2
         self._surface.blit(self.image, (self.rect.left, self.rect.top))
