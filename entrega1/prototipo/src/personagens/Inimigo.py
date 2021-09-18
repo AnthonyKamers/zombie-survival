@@ -55,17 +55,15 @@ class Inimigo(Personagem, pg.sprite.Sprite):
         self.rect.left = int(self.floating_point_x)
         self.rect.top = int(self.floating_point_y)
 
-        # positionBefore = (self.rect.left, self.rect.top)
+        positionBefore = (self.rect.left, self.rect.top)
 
-        # rect = Teste(self._surface, (int(self.floating_point_x), int(self.floating_point_y)), (self._comprimento, self._altura))
-        # collision = self.atingiuCenario(rect, walls)
+        rect = Teste(self._surface, (int(self.floating_point_x), int(self.floating_point_y)), (self._comprimento, self._altura))
+        collision = self.atingiuCenario(rect, walls)
 
-        # # print(collision)
-
-        # # colisao com parede
-        # if collision:
-        #     self.rect.left = positionBefore[0]
-        #     self.rect.top = positionBefore[1]
-        # else:
-        #     self.rect.left = int(self.floating_point_x)
-        #     self.rect.top = int(self.floating_point_y)
+        # colisao com parede
+        if collision:
+            self.rect.left = positionBefore[0]
+            self.rect.top = positionBefore[1]
+        else:
+            self.rect.left = int(self.floating_point_x)
+            self.rect.top = int(self.floating_point_y)
