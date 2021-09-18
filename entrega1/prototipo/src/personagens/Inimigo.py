@@ -33,7 +33,7 @@ class Inimigo(Personagem, pg.sprite.Sprite):
         self._vida -= quantidadeVida
 
     def atingiuCenario(self, rect, walls):
-        return pg.sprite.spritecollideany(self, walls)
+        return pg.sprite.spritecollideany(rect, walls)
 
     def move(self, walls):
         if self._jogador is None: return

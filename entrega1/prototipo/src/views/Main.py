@@ -55,7 +55,7 @@ class Main():
             self._round += 1
 
             self._qtdInimigosRound = random.randint(3, 7)
-            cenario = list(filter(lambda x: x.getName() == 'floor', self._cenario))
+            cenario = list(filter(lambda x: x.getName() != 'wall', self._cenario))
 
             for i in range(0, self._qtdInimigosRound):
                 escolhido = random.choice(cenario)
