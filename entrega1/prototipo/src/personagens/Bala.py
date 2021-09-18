@@ -4,7 +4,7 @@ from typing import List
 from ..utils.functions import load_image
 
 class Bala(pg.sprite.Sprite):
-    def __init__(self, surface: pg.Surface, position, size, image, direction, dano: int = 20):
+    def __init__(self, surface: pg.Surface, position, size, image, direction, dano: int = 25):
         super().__init__()
         self._surface = surface
         self._size = size

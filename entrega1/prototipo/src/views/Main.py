@@ -55,7 +55,7 @@ class Main():
             self._round += 1
 
             self._qtdInimigosRound = random.randint(3, 7)
-            cenario = list(filter(lambda x: x.getName() == 'floor', self._cenario))
+            cenario = list(filter(lambda x: x.getName() == 'spawnpoints', self._cenario))
 
             for i in range(0, self._qtdInimigosRound):
                 escolhido = random.choice(cenario)
@@ -66,7 +66,7 @@ class Main():
 
             return False
         else:
-            timer = font.render(str(((tick - self._tick) // 1000) + 1), True, (255, 255, 0))
+            timer = font.render(str(3 - ((tick - self._tick) // 1000)), True, (255, 255, 0))
             self._surface.blit(timer, (self._surface.get_width() / 2, self._surface.get_height() / 2 - 200))
             return True
 
@@ -113,7 +113,7 @@ class Main():
         
         # blittar round atual
         font = pg.font.SysFont('Arial', 64)
-        round = font.render(str(self._round), True, (0, 255, 255))
+        round = font.render(str(self._round), True, (0, 0, 0))
         self._surface.blit(round, (self._surface.get_width() / 2, 0))
 
         # blittar jogadores
@@ -121,10 +121,10 @@ class Main():
         self._player2.draw()
 
         # blittar vida jogadores
-        vida1 = font.render("1: " + str( + self._player1.getVida()), True, (0, 255, 255))
-        vida2 = font.render("2: " + str(self._player2.getVida()), True, (0, 255, 255))
+        vida1 = font.render("P1: " + str( + self._player1.getVida()), True, (0, 0, 0))
+        vida2 = font.render("P2: " + str(self._player2.getVida()), True, (0, 0, 0))
         self._surface.blit(vida1, (5, 0))
-        self._surface.blit(vida2, (self._surface.get_width() - 160, 0))
+        self._surface.blit(vida2, (self._surface.get_width() - 190, 0))
 
         # blittar inimigos
         for inimigo in self._inimigos:

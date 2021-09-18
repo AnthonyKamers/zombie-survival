@@ -63,7 +63,7 @@ class Jogador(Personagem, pg.sprite.Sprite):
         self._vida -= quantidadeVida
 
     def atingiuCenario(self, rect, walls):
-        return  pg.sprite.spritecollideany(rect, walls)
+        return pg.sprite.spritecollideany(rect, walls)
 
     def atingiuVida(self, vidas: pg.sprite.Sprite):
         return pg.sprite.spritecollideany(self, vidas)
