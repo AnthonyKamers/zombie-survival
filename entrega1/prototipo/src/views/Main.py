@@ -11,14 +11,12 @@ class Main():
 
     def __init__(self, surface, width, height):
         self._surface = surface
-        self._player1 = Jogador(self._surface, width/2, (height/2) - 100, 32, 32, imagem="player1.png")
-        self._player2 = Jogador(self._surface, width/2, (height/2) - 100, 32, 32, imagem="player2.png")
+        self._width = width
+        self._height = height
 
-        self._vidas = pg.sprite.Group()
         self._inimigos = pg.sprite.Group()
         self._cenario = []
         self._walls = pg.sprite.Group()
-        self._layers = pytmx.load_pygame(get_path("map_finito.tmx"))
 
         self._tick = pg.time.get_ticks() # tick principal do jogo (tempo do jogo em andamento)
         self._iniciarRound = True
@@ -26,13 +24,14 @@ class Main():
         self._round = 0
         self._qtdInimigosRound = 0
 
+        layers = pytmx.load_pygame(get_path("map_finito.tmx"))
         # montar cenário
-        for layer in self._layers.visible_layers:
+        for layer in layers.visible_layers:
             name = layer.name
 
             if isinstance(layer, pytmx.TiledTileLayer):
                 for x, y, gid in layer:
-                    tile = self._layers.get_tile_image_by_gid(gid)
+                    tile = layers.get_tile_image_by_gid(gid)
                     if tile:
                         tile = Tile(self._surface, pg.transform.scale(tile, (32, 32)), (x, y), (32, 32), name)
                         self._cenario.append(tile)
@@ -42,6 +41,21 @@ class Main():
 
         pg.font.init()
         self.iniciarRound()
+
+    def spawnJogadores(self):
+        self._jogador1 = Jogador(self._surface, self._width/2, (self._height/2) - 100, 32, 32, imagem="player1.png")
+        self._jogador2 = Jogador(self._surface, self._width/2, (self._height/2) - 100, 32, 32, imagem="player2.png")
+
+    def spawnEnemies(self):
+        self._qtdInimigosRound = random.randint(3, 7)
+        cenario = list(filter(lambda x: x.getName() == 'spawnpoints', self._cenario))
+
+        for i in range(0, self._qtdInimigosRound):
+            escolhido = random.choice(cenario)
+            inimigo_now = Inimigo(self._surface, escolhido.getX(), escolhido.getY(), 32, 32, dano = (self._round+1)*2)
+            inimigo_now.setJogadorInimigo(self._jogador1 if i % 2 == 0 else self._jogador2)
+            
+            self._inimigos.add(inimigo_now)
 
     def iniciarRound(self):
         tick = pg.time.get_ticks()
@@ -53,16 +67,7 @@ class Main():
             self._tick = tick
 
             self._round += 1
-
-            self._qtdInimigosRound = random.randint(3, 7)
-            cenario = list(filter(lambda x: x.getName() == 'spawnpoints', self._cenario))
-
-            for i in range(0, self._qtdInimigosRound):
-                escolhido = random.choice(cenario)
-                inimigo_now = Inimigo(self._surface, escolhido.getX(), escolhido.getY(), 32, 32, dano = (self._round+1)*2)
-                inimigo_now.setJogadorInimigo(self._player1 if i % 2 == 0 else self._player2)
-                
-                self._inimigos.add(inimigo_now)
+            self.spawnEnemies()
 
             return False
         else:
@@ -75,7 +80,7 @@ class Main():
             self._iniciarRound = True
     
     def avaliarEncerramentoPartida(self):
-        if self._player1.getVida() <= 0 or self._player2.getVida() <= 0:
+        if self._jogador1.getVida() <= 0 or self._jogador2.getVida() <= 0:
             return "isOver"
         return ""
     
@@ -95,16 +100,23 @@ class Main():
 
     def collide(self):
         # colisão dos inimigos com o jogador
-        self.collideJogadorInimigo(self._player1)
-        self.collideJogadorInimigo(self._player2)
+        self.collideJogadorInimigo(self._jogador1)
+        self.collideJogadorInimigo(self._jogador2)
 
         # colisão balas dos jogadores com as paredes (e destruir as balas, caso atingirem)
-        pg.sprite.groupcollide(self._walls, self._player1.getBalas(), False, True)
-        pg.sprite.groupcollide(self._walls, self._player2.getBalas(), False, True)
+        balas1 = self._jogador1.getBalas()
+        balas2 = self._jogador2.getBalas()
+        pg.sprite.groupcollide(self._walls, balas1, False, True)
+        pg.sprite.groupcollide(self._walls, balas2, False, True)
         
         # colisão balas dos jogadores com inimigos
-        self.collideInimigoBala(self._player1)
-        self.collideInimigoBala(self._player2)
+        self.collideInimigoBala(self._jogador1)
+        self.collideInimigoBala(self._jogador2)
+
+    def moveZombies(self):
+        for inimigo in self._inimigos:
+            inimigo.move(self._walls)
+            inimigo.draw()
 
     def draw(self):
         # blittar cenário na tela
@@ -117,19 +129,17 @@ class Main():
         self._surface.blit(round, (self._surface.get_width() / 2, 0))
 
         # blittar jogadores
-        self._player1.draw()
-        self._player2.draw()
+        self._jogador1.draw()
+        self._jogador2.draw()
 
         # blittar vida jogadores
-        vida1 = font.render("P1: " + str( + self._player1.getVida()), True, (0, 0, 0))
-        vida2 = font.render("P2: " + str(self._player2.getVida()), True, (0, 0, 0))
+        vida1 = font.render("P1: " + str( + self._jogador1.getVida()), True, (0, 0, 0))
+        vida2 = font.render("P2: " + str(self._jogador2.getVida()), True, (0, 0, 0))
         self._surface.blit(vida1, (5, 0))
         self._surface.blit(vida2, (self._surface.get_width() - 190, 0))
 
         # blittar inimigos
-        for inimigo in self._inimigos:
-            inimigo.move(self._walls)
-            inimigo.draw()
+        self.moveZombies()
 
         # se atributo estiver settado, deve executar método iniciarRound (3 segundos para jogadores se prepararem)
         if self._iniciarRound:
@@ -168,11 +178,11 @@ class Main():
         elif keyboard[pg.K_s]:
             direction[1] = 1
 
-        self._player1.move(direction[0], direction[1], self._walls, self._vidas)
+        self._jogador1.move(direction[0], direction[1], self._walls)
 
         # tiro jogador 1
         if keyboard[pg.K_SPACE]:
-            self._player1.shoot()
+            self._jogador1.shoot()
 
         # jogador 2
         direction2 = [0, 0]
@@ -186,11 +196,11 @@ class Main():
         elif keyboard[pg.K_DOWN]:
             direction2[1] = 1
 
-        self._player2.move(direction2[0], direction2[1], self._walls, self._vidas)
+        self._jogador2.move(direction2[0], direction2[1], self._walls)
 
         # tiro jogador 2
         if keyboard[pg.K_RCTRL] or keyboard[pg.K_LCTRL]:
-            self._player2.shoot()
+            self._jogador2.shoot()
 
         # retorna parâmetro para Jogo
         return emit

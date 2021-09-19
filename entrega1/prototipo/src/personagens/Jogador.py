@@ -5,7 +5,7 @@ from .Bala import Bala
 from .Teste import Teste # classe auxiliar para fazer teste de colisão com parede
 from ..utils import functions
 
-class Jogador(Personagem, pg.sprite.Sprite):
+class Jogador(Personagem):
 
     def __init__(self, surface: pg.Surface, x: int, y: int, comprimento: int, altura: int, vida: int = 100, velocidade: int = 1, imagem: str = "player1.png"):
         super().__init__(surface, x, y, comprimento, altura, vida, velocidade, imagem)
@@ -16,12 +16,11 @@ class Jogador(Personagem, pg.sprite.Sprite):
         self._intervaloDeTiro = 200
         self._ultimoTiro = pg.time.get_ticks()
     
-    def move(self, x: int, y: int, cenario: pg.sprite.Sprite, vidas: pg.sprite.Group):
+    def move(self, x: int, y: int, cenario: pg.sprite.Sprite):
         direction = [x, y]
 
         # teste de colisão com o cenário
-        # rect = pg.Rect(self.rect.left + direction[0], self.rect.top + direction[1], self._comprimento, self._altura)
-        rect = Teste(self._surface, (self.rect.left + direction[0], self.rect.top + direction[1]), (self._comprimento, self._altura))
+        rect = Teste((self.rect.left + direction[0], self.rect.top + direction[1]), (self._comprimento, self._altura))
         atingiuCenario = self.atingiuCenario(rect, cenario)
 
         # se não colidiu com o cenário, movimenta-se
@@ -44,14 +43,8 @@ class Jogador(Personagem, pg.sprite.Sprite):
     def getVida(self):
         return self._vida
     
-    def getPosicao(self):
-        return (self._x, self._y)
-    
     def getBalas(self):
         return self._balas
-    
-    def aumentarVida(self, quantidadeVida: int):
-        self._vida += quantidadeVida
 
     def reduzirVida(self, quantidadeVida: int):
         self._vida -= quantidadeVida
@@ -60,7 +53,7 @@ class Jogador(Personagem, pg.sprite.Sprite):
         return pg.sprite.spritecollideany(rect, walls)
 
     def draw(self):
-        self._surface.blit(functions.flip_sprite(self._imagem, tuple(self._lastDirecao)), (self.rect.left, self.rect.top))
+        self._surface.blit(functions.flip_sprite(self._image, tuple(self._lastDirecao)), (self.rect.left, self.rect.top))
 
         # blittar balas do jogador
         for b in self._balas:

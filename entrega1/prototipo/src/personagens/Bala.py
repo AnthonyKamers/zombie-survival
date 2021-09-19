@@ -18,15 +18,6 @@ class Bala(pg.sprite.Sprite):
     
     def getDano(self):
         return self._dano
-    
-    def checkCenario(cenario: pg.sprite.Sprite):
-        pass
-
-    def checkZumbi(zumbis: List):
-        pass
-
-    def destroy(self):
-        pass
 
     def draw(self):
         self.rect.left += self._direction[0] * 2

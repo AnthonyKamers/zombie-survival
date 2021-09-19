@@ -8,7 +8,6 @@ class Tile(pg.sprite.Sprite):
         self._x, self._y = posicao
         self._comprimento, self._altura = tamanho
         self._tile = tile
-        self._image = self._tile
         self._name = name
         self.rect = pg.Rect((self._x * self._comprimento, self._y * self._altura), tamanho)
 

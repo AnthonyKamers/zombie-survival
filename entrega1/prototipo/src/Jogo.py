@@ -6,35 +6,28 @@ class Jogo:
 
     def __init__(self):
         self._surface = pg.display.set_mode((1024, 576))
-        self._width, self._height = self._surface.get_size()
-        self._paused = False
-        self._game = None
-        self._tick = pg.time.get_ticks()
+        self._comprimento, self._altura = self._surface.get_size()
+        self._main = None
 
-        self._view = views["START"](self._surface) # setta view inicial para tela inicial
+        self._tela = views["START"](self._surface) # setta view inicial para tela inicial
 
     def inicializarParametros(self):
         pg.init()
         pg.display.init()
         pg.display.set_caption("Zombie Survival")
 
-    @property
-    def getView(self):
-        return self._view
-
     def drawView(self):
-        self._view.draw()
+        return self._tela.draw()
 
     def unsetView(self):
-        self._view = None
+        self._tela = None
 
     def pausar(self):
-        self._paused = True
-        self._view = views["PAUSE"](self._surface)
+        self._tela = views["PAUSE"](self._surface)
 
     def iniciarPartida(self):
-        self._game = views["MAIN"](self._surface, self._width, self._height)
-        self._view = None
+        self._main = views["MAIN"](self._surface, self._comprimento, self._altura)
+        self._tela = None
 
     def loop(self):
         # loop principal do jogo
@@ -48,11 +41,11 @@ class Jogo:
 
             # troca de telas/views
             # quando jogo não estiver em execução
-            if self._view is not None:
-                target = self._view.draw()
+            if self._tela is not None:
+                target = self.drawView()
 
                 if target == 'RESUME':
-                    self._view = None
+                    self.unsetView()
 
                 elif target in ("RESTART", "PLAY"):
                     self.iniciarPartida()
@@ -62,14 +55,14 @@ class Jogo:
 
             else:
                 # view is none
-                target = self._game.draw()
+                target = self._main.draw()
 
                 if target == "PAUSE":
                     self.pausar()
 
                 elif target == "isOver":
-                    self._game = None
-                    self._view = views["START"](self._surface)
+                    self._main = None
+                    self._tela = views["START"](self._surface)
 
     def quit(self):
         exit()
