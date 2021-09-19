@@ -35,12 +35,6 @@ class Jogador(Personagem, pg.sprite.Sprite):
             if direction[0] or direction[1]:
                 self._lastDirecao = self._direcao
 
-        # teste de colisão com alguma vida
-        vidaAtingida = self.atingiuVida(vidas)
-        if vidaAtingida is not None:
-            vidas.remove(vidaAtingida)  # remove curativo do cenário
-            self.aumentarVida(10)       # cada curativo tem recuperação de vida de 10% da vida do jogador
-
     def shoot(self):
         tickAtual = pg.time.get_ticks()
         if tickAtual - self._ultimoTiro > self._intervaloDeTiro:
@@ -64,9 +58,6 @@ class Jogador(Personagem, pg.sprite.Sprite):
 
     def atingiuCenario(self, rect, walls):
         return pg.sprite.spritecollideany(rect, walls)
-
-    def atingiuVida(self, vidas: pg.sprite.Sprite):
-        return pg.sprite.spritecollideany(self, vidas)
 
     def draw(self):
         self._surface.blit(functions.flip_sprite(self._imagem, tuple(self._lastDirecao)), (self.rect.left, self.rect.top))
