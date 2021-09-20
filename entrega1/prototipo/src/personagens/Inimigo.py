@@ -35,8 +35,7 @@ class Inimigo(Personagem):
     def move(self, walls):
         if self._jogador is None: return
 
-        self._floating_point_x, self._floating_point_y = [
-            self.rect.left, self.rect.top]
+        self._floating_point_x, self._floating_point_y = [self.rect.left, self.rect.top]
         self.dest_x, self.dest_y = (self._jogador.rect.left, self._jogador.rect.top)
 
         x_diff = self.dest_x - self.rect.left

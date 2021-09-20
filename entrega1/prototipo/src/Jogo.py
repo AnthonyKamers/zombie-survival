@@ -8,26 +8,27 @@ class Jogo:
         self._surface = pg.display.set_mode((1024, 576))
         self._comprimento, self._altura = self._surface.get_size()
         self._main = None
-
-        self._tela = views["START"](self._surface) # setta view inicial para tela inicial
+        self._view = None
 
     def inicializarParametros(self):
+        self._view = views["START"](self._surface) # setta view inicial para tela inicial
+
         pg.init()
         pg.display.init()
         pg.display.set_caption("Zombie Survival")
 
     def drawView(self):
-        return self._tela.draw()
+        return self._view.draw()
 
     def unsetView(self):
-        self._tela = None
+        self._view = None
 
     def pausar(self):
-        self._tela = views["PAUSE"](self._surface)
+        self._view = views["PAUSE"](self._surface)
 
     def iniciarPartida(self):
+        self.unsetView()
         self._main = views["MAIN"](self._surface, self._comprimento, self._altura)
-        self._tela = None
 
     def loop(self):
         # loop principal do jogo
@@ -41,7 +42,7 @@ class Jogo:
 
             # troca de telas/views
             # quando jogo não estiver em execução
-            if self._tela is not None:
+            if self._view is not None:
                 target = self.drawView()
 
                 if target == 'RESUME':
@@ -62,7 +63,7 @@ class Jogo:
 
                 elif target == "isOver":
                     self._main = None
-                    self._tela = views["START"](self._surface)
+                    self._view = views["START"](self._surface)
 
     def quit(self):
         exit()

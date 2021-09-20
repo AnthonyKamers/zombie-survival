@@ -13,6 +13,7 @@ class Main():
         self._surface = surface
         self._width = width
         self._height = height
+        self.spawnJogadores()
 
         self._inimigos = pg.sprite.Group()
         self._cenario = []
@@ -80,7 +81,9 @@ class Main():
             self._iniciarRound = True
     
     def avaliarEncerramentoPartida(self):
-        if self._jogador1.getVida() <= 0 or self._jogador2.getVida() <= 0:
+        vida1 = self._jogador1.getVida()
+        vida2 = self._jogador2.getVida()
+        if vida1 <= 0 or vida2 <= 0:
             return "isOver"
         return ""
     
