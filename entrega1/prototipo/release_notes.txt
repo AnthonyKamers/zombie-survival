@@ -1,0 +1,7 @@
+Instruções para rodar o programa (python 3.9):
+
+Para rodar o nosso jogo, precisa-se ter as bibliotecas pygame e pytmx, que estão disponíveis no gerenciador de pacotes do python (pip). Colocamos as bibliotecas em um txt, logo basta executar o seguinte comando nesta pasta:
+    pip install -r requirements.txt
+
+Após isso, basta rodar:
+    python main.py
