@@ -123,8 +123,8 @@ class Main():
 
     def draw(self):
         # blittar cenário na tela
-        for i in self._cenario:
-            i.draw()
+        for tile in self._cenario:
+            tile.draw()
         
         # blittar round atual
         font = pg.font.SysFont('Arial', 64)

@@ -1,0 +1,3 @@
+Para a entrega final, fizemos algumas melhorias nos diagramas. Adicionamos algoritmos de métodos para métodos que necessitavam de explicação do uso da interface (com Pygame) e explicação mais detalhada de cada um.
+
+Demos ênfase para os métodos de Main.collide(), main.draw(), jogador.draw(), bala.draw(), jogador.move() e à lógica de dano dos zumbis ser maior a cada round. Explicação e detalhes de cada um no seu respectivo diagrama de sequência e/ou diagrama de algoritmo de método.

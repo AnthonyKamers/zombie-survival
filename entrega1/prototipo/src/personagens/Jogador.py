@@ -56,5 +56,5 @@ class Jogador(Personagem):
         self._surface.blit(functions.flip_sprite(self._image, tuple(self._lastDirecao)), (self.rect.left, self.rect.top))
 
         # blittar balas do jogador
-        for b in self._balas:
-            b.draw()
+        for bala in self._balas:
+            bala.draw()
